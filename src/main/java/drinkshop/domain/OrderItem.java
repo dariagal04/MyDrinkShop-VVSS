@@ -1,6 +1,7 @@
 package drinkshop.domain;
 
 import java.io.Serializable;
+// t
 
 public class OrderItem implements Serializable {
 
