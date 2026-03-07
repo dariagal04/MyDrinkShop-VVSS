@@ -109,6 +109,8 @@ public class DrinkShopController {
     }
 
     // ---------- PRODUCT ----------
+
+
     @FXML
     private void onAddProduct() {
         Reteta r=retetaTable.getSelectionModel().getSelectedItem();
@@ -120,16 +122,28 @@ public class DrinkShopController {
             alert.showAndWait();
             return;
         }else
-        if (service.getAllProducts().stream().filter(p->p.getId()==r.getId()).toList().size()>0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
+       // if (service.getAllProducts().stream().filter(p->p.getId()==r.getId()).toList().size()>0) {
+            if (service.getAllProducts().stream().anyMatch(p -> p.getId() == r.getId())){
+
+                Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Exista un produs cu reteta adaugata.");
             alert.showAndWait();
             return;
         }
+        double price;
+
+        try {
+            price = Double.parseDouble(txtProdPrice.getText());
+        } catch (NumberFormatException e) {
+            showError("Pret invalid!");
+            return;
+        }
+
         Product p = new Product(r.getId(),
                 txtProdName.getText(),
-                Double.parseDouble(txtProdPrice.getText()),
+                //Double.parseDouble(txtProdPrice.getText()),
+                price,
                 comboProdCategorie.getValue(),
                 comboProdTip.getValue());
         service.addProduct(p);
@@ -140,8 +154,17 @@ public class DrinkShopController {
     private void onUpdateProduct() {
         Product selected = productTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
+        double price;
+
+        try {
+            price = Double.parseDouble(txtProdPrice.getText());
+        } catch (NumberFormatException e) {
+            showError("Pret invalid!");
+            return;
+        }
         service.updateProduct(selected.getId(), txtProdName.getText(),
-                Double.parseDouble(txtProdPrice.getText()),
+                //Double.parseDouble(txtProdPrice.getText()),
+                price,
                 comboProdCategorie.getValue(), comboProdTip.getValue());
         initData();
     }
@@ -167,8 +190,16 @@ public class DrinkShopController {
     // ---------- RETETA NOUA ----------
     @FXML
     private void onAddNewIngred() {
+        double cant;
+        try {
+            cant = Double.parseDouble(txtNewIngredCant.getText());
+        } catch (NumberFormatException e) {
+            showError("Cantitate invalida!");
+            return;
+        }
         newRetetaList.add(new IngredientReteta(txtNewIngredName.getText(),
-                Double.parseDouble(txtNewIngredCant.getText())));
+               // Double.parseDouble(txtNewIngredCant.getText())));
+                cant));
     }
 
     @FXML
