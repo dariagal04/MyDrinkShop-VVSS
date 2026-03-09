@@ -2,6 +2,7 @@ package drinkshop.ui;
 
 import drinkshop.domain.*;
 import drinkshop.service.DrinkShopService;
+import drinkshop.service.validator.ValidationException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -113,7 +114,8 @@ public class DrinkShopController {
 
     @FXML
     private void onAddProduct() {
-        Reteta r=retetaTable.getSelectionModel().getSelectedItem();
+       try
+       { Reteta r=retetaTable.getSelectionModel().getSelectedItem();
 
         if (r == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -148,6 +150,13 @@ public class DrinkShopController {
                 comboProdTip.getValue());
         service.addProduct(p);
         initData();
+       }
+       catch (ValidationException e) {
+           showError(e.getMessage());
+       } catch (Exception e) {
+           showError("Eroare neasteptata: " + e.getMessage());
+       }
+
     }
 
     @FXML
@@ -162,11 +171,18 @@ public class DrinkShopController {
             showError("Pret invalid!");
             return;
         }
-        service.updateProduct(selected.getId(), txtProdName.getText(),
-                //Double.parseDouble(txtProdPrice.getText()),
-                price,
-                comboProdCategorie.getValue(), comboProdTip.getValue());
-        initData();
+        try {
+            service.updateProduct(selected.getId(), txtProdName.getText(),
+                    //Double.parseDouble(txtProdPrice.getText()),
+                    price,
+                    comboProdCategorie.getValue(), comboProdTip.getValue());
+            initData();
+        }
+        catch (ValidationException e) {
+            showError(e.getMessage());
+        } catch (Exception e) {
+            showError("Eroare neasteptata: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -210,10 +226,18 @@ public class DrinkShopController {
 
     @FXML
     private void onAddNewReteta() {
+        try
+        {
         Reteta r = new Reteta(service.getAllRetete().size()+1, new ArrayList<>(newRetetaList));
         service.addReteta(r);
         newRetetaList.clear();
         initData();
+        }
+        catch (ValidationException e) {
+            showError(e.getMessage());
+        } catch (Exception e) {
+            showError("Eroare neasteptata: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -253,6 +277,8 @@ public class DrinkShopController {
 
     @FXML
     private void onFinalizeOrder() {
+        try
+        {
         currentOrder.getItems().clear();
         currentOrder.getItems().addAll(currentOrderItems);
         currentOrder.computeTotalPrice();
@@ -263,6 +289,12 @@ public class DrinkShopController {
         currentOrderItems.clear();
         currentOrder = new Order(currentOrder.getId() + 1);
         updateOrderTotal();
+        }
+        catch (ValidationException e) {
+            showError(e.getMessage());
+        } catch (Exception e) {
+            showError("Eroare neasteptata: " + e.getMessage());
+        }
     }
 
     private void updateOrderTotal() {
