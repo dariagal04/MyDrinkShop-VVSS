@@ -224,7 +224,7 @@ class ProductServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {0, -0.1})
+    @ValueSource(doubles = {0, -0.01})
     @DisplayName("BVA - invalid prices")
     void addProduct_PriceInvalid_BVA(double price) {
         product = new Product(1, "Cafea", price,
