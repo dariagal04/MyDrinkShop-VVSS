@@ -56,29 +56,38 @@ public class StocService {
     }
 
     public void consuma(Reteta reteta) {
+        if (reteta == null) {
+            throw new IllegalArgumentException("Reteta nu poate fi null.");
+        }
+
+        if (reteta.getIngrediente().isEmpty()) {
+            throw new IllegalArgumentException("Reteta nu are ingrediente.");
+        }
+
         if (!areSuficient(reteta)) {
             throw new IllegalStateException("Stoc insuficient pentru rețeta.");
         }
 
         for (IngredientReteta e : reteta.getIngrediente()) {
-            String ingredient = e.getDenumire();
-            double necesar = e.getCantitate();
+            consumaIngredient(e.getDenumire(), e.getCantitate());
+        }
+    }
 
-            List<Stoc> ingredienteStoc = stocRepo.findAll().stream()
-                    .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
-                    .toList();
+    private void consumaIngredient(String ingredient, double necesar) {
+        List<Stoc> ingredienteStoc = stocRepo.findAll().stream()
+                .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
+                .toList();
 
-            double ramas = necesar;
+        double ramas = necesar;
 
-            for (Stoc s : ingredienteStoc) {
-                if (ramas <= 0) break;
+        for (Stoc s : ingredienteStoc) {
+            if (ramas <= 0) break;
 
-                double deScazut = Math.min(s.getCantitate(), ramas);
-                s.setCantitate((int)(s.getCantitate() - deScazut));
-                ramas -= deScazut;
+            double deScazut = Math.min(s.getCantitate(), ramas);
+            s.setCantitate((int)(s.getCantitate() - deScazut));
+            ramas -= deScazut;
 
-                stocRepo.update(s);
-            }
+            stocRepo.update(s);
         }
     }
 }
