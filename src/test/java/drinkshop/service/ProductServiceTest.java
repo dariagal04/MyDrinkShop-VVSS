@@ -3,6 +3,7 @@ package drinkshop.service;
 import drinkshop.domain.*;
 import drinkshop.repository.AbstractRepository;
 import drinkshop.repository.Repository;
+import drinkshop.service.validator.ProductValidator;
 import drinkshop.service.validator.ValidationException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,7 +48,8 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         repo = new InMemoryRepo();
-        service = new ProductService(repo);
+        //service = new ProductService(repo);
+        service = new ProductService(repo, new ProductValidator());
     }
 
     @AfterEach
