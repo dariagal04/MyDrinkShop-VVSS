@@ -78,6 +78,7 @@
         <configuration>
           <release>11</release>
           <excludes>
+            <exclude>module-info.java</exclude>
             <exclude>drinkshop/ui/**</exclude>
           </excludes>
         </configuration>
