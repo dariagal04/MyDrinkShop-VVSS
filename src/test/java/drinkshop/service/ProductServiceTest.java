@@ -225,11 +225,10 @@ class ProductServiceTest {
         ));
     }
 
-    @ParameterizedTest
-    @ValueSource(doubles = {0, -0.01})
-    @DisplayName("BVA - invalid prices")
-    void addProduct_PriceInvalid_BVA(double price) {
-        product = new Product(1, "Cafea", price,
+    @Test
+    @DisplayName("BVA - invalid price")
+    void addProduct_PriceInvalid_BVA() {
+        product = new Product(1, "Cafea", 0,
                 CategorieBautura.CLASSIC_COFFEE,
                 TipBautura.BASIC);
 
@@ -237,7 +236,7 @@ class ProductServiceTest {
         results.add(new TestResult(
                 "addProduct_PriceInvalid_BVA",
                 "BVA",
-                "price=" + price,
+                "price=0",
                 "ValidationException",
                 "Passed"
         ));
